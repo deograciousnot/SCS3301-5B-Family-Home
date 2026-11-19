@@ -1,0 +1,19 @@
+function S = setup_camera_lighting(S)
+% SETUP_CAMERA_LIGHTING  Sun light and the list of camera positions (R4, R5).
+%   The lamps are created in build_lamps.m; the sun moves in update_scene.m.
+%
+% Author(s): <MEMBER NAME>   |   SCS3301 Group XX, Project 5B
+S.h.sun = light('Parent', S.ax, 'Style', 'infinite', ...
+                'Position', [0 1 1], 'Color', [1 0.95 0.85]);
+set(S.ax, 'AmbientLightColor', [0.35 0.35 0.4]);
+
+% Camera list. 'up' must not point along the viewing direction,
+% so the top view uses +y as "up".
+S.cams = struct( ...
+    'name',   {'Overview',      'Kitchen',       'Living room',   'Top view'}, ...
+    'pos',    {[6 -9 9],        [6.2 1.0 2.0],   [0.6 0.8 1.8],   [6 3 25]}, ...
+    'target', {[6 3 0.8],       [7.6 5.6 0.9],   [2.4 5.8 1.0],   [6 3 0]}, ...
+    'va',     {40,              60,              60,              35}, ...
+    'up',     {[0 0 1],         [0 0 1],         [0 0 1],         [0 1 0]});
+S = apply_camera(S);
+end

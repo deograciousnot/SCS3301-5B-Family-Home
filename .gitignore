@@ -1,0 +1,21 @@
+# MATLAB autosave / temporary files
+*.asv
+*.m~
+*.mex*
+slprj/
+
+# Videos are too big for Git - share them via Google Drive instead
+*.mp4
+*.avi
+media/video/
+
+# Local backups (keep these on your own machine / Drive)
+backups/
+
+# Office lock files created while a document is open
+~$*
+
+# OS clutter
+Thumbs.db
+desktop.ini
+.DS_Store
