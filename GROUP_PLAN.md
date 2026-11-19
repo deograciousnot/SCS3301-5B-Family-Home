@@ -4,6 +4,8 @@
 
 **Challenge mode (recommended option):** **night mode**. At night the room lights come on automatically and **at least two appliances behave differently**.
 
+**Code repo (public):** https://github.com/deograciousnot/SCS3301-5B-Family-Home (see section 5 for how to join and use it).
+
 **Marks:** 30 in total = MATLAB project 15 + presentation 5 + report 10. The lecturer marks the code **as it runs**, and **every member** may be asked to explain or change a small part of it live.
 
 ---
@@ -46,7 +48,7 @@ Save a **dated backup** in `backups/` at every milestone, e.g. `backup_2026-11-2
 With 5 members, merge role 6 into role 4 and role 7 into role 1. **Everyone** writes part of the report and speaks at the presentation.
 
 **Rules for working together:**
-- Use one shared folder (MATLAB Drive or similar).
+- Keep the code in our GitHub repo (see section 5).
 - Only edit the files you own. If you need to change someone else's file, tell them first.
 - Put your name in the `Author(s):` header of each file you work on (required by R8).
 - Each person must be able to explain their own code **and** the main loop.
@@ -102,7 +104,11 @@ With 5 members, merge role 6 into role 4 and role 7 into role 1. **Everyone** wr
 
 ## 5. How we use Git (GitHub)
 
-The code lives in a **private** GitHub repo. Keep it private so other groups can't copy it. Ask the repo owner to add you as a collaborator.
+The code lives in a **public** GitHub repo: **https://github.com/deograciousnot/SCS3301-5B-Family-Home**
+
+- **Anyone can clone or download it** without logging in, which makes MATLAB Online easy.
+- **To push changes** you must be a collaborator. Send your GitHub username to the repo owner, then accept the email invite.
+- Because the repo is public, the commit history is our proof of authorship. Commit often under your own name so it's clear who wrote what.
 
 **Golden rules**
 1. **Only edit the files you own** (see section 2). The shared files (`run_project.m`, `init_state.m`, `update_scene.m`) are changed by the lead, or on a branch that the lead reviews.
@@ -113,9 +119,13 @@ The code lives in a **private** GitHub repo. Keep it private so other groups can
 
 **Desktop (Git installed)**
 ```
-git clone https://github.com/<owner>/<repo>.git     (first time only)
-git pull                                            (before you start)
-... edit your files, run run_project in MATLAB ...
+# first time only
+git clone https://github.com/deograciousnot/SCS3301-5B-Family-Home.git
+
+# every time you start working
+git pull
+
+# ... edit your files, run run_project in MATLAB, then:
 git add code/build_furniture.m
 git commit -m "Add rug and chairs to living room"
 git pull
@@ -123,7 +133,8 @@ git push
 ```
 
 **MATLAB Online**
-- First time: in the Command Window run `gitclone("https://github.com/<owner>/<repo>.git")`, or use the Files panel's source-control option. For the password, use a GitHub **personal access token** (GitHub → Settings → Developer settings → Personal access tokens).
+- First time: in the Command Window run `gitclone("https://github.com/deograciousnot/SCS3301-5B-Family-Home.git")`, or use the Files panel's source-control option. No login is needed to clone.
+- To **push**, MATLAB asks for a username and password. For the password, use a GitHub **personal access token**, not your normal password. Create one at **https://github.com/settings/tokens** → *Generate new token (classic)* → tick **repo** → *Generate*, then copy it straight away (GitHub shows it only once). This is in your **account** settings (profile picture, top right → Settings → *Developer settings* at the very bottom of the left menu), not the repo's Settings tab.
 - After that, right-click in the Files panel → **Source Control** → *Pull*, *Commit*, *Push*.
 - If Git gets too painful, send your changed `.m` files to a teammate who can commit them for you. Keep your name in the file header so your work still counts.
 
