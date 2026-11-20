@@ -88,7 +88,7 @@ It works like a cartoon: draw everything once, then many times a second move thi
 - **Rotating about a hinge.** `mat_rotz` rotates around the origin, but a door must swing around its hinge. `mat_about_pivot` does: slide the hinge to the origin → rotate → slide back. In maths: `T = translate(+hinge) * rotate(θ) * translate(−hinge)`.
 - **Hierarchy (R3).** `hgtransform` is an invisible container with a matrix. Anything inside it moves with it: house → door → handle. We only rotate the door; the handle follows because it's the door's child.
 - **Key presses.** `on_key_press.m` only *changes values* in S (e.g. "fridge target = 100° open"). It doesn't animate anything.
-- **Every frame.** `update_scene.m` reads S and animates: moves the clock and sun, switches lamps, swings doors smoothly towards their target angle, updates the TV and cooker, runs the night-mode rules and writes the status bar.
+- **Every frame.** `update_scene.m` calls four smaller files in order: `update_lighting` (clock, sun, lamps), `update_doors` (doors swing smoothly towards their target angle), `update_appliances` (fridge, TV, cooker and the night-mode rules) and `update_status` (status bar). Each is owned by a different person.
 - **Camera (R4).** `S.cams` holds 4 views. `apply_camera.m` sets the position, target, zoom and projection.
 
 ### Where things live
@@ -97,7 +97,10 @@ It works like a cartoon: draw everything once, then many times a second move thi
 |---|---|
 | Furniture, walls, floors | `build_furniture.m`, `build_rooms.m` |
 | Fridge, TV, cooker shapes | `build_fridge.m`, `build_tv.m`, `build_cooker.m` |
-| How things move or behave over time | `update_scene.m` |
+| Clock, sun, lamps | `update_lighting.m` |
+| How the room doors swing | `update_doors.m` |
+| How the fridge, TV and cooker behave (incl. night mode) | `update_appliances.m` |
+| The status bar text | `update_status.m` |
 | What a key does | `on_key_press.m` |
 | Starting values (start time, timers) | `init_state.m` |
 | Camera positions | `setup_camera_lighting.m` |
@@ -107,22 +110,30 @@ It works like a cartoon: draw everything once, then many times a second move thi
 
 ## 3. Roles
 
-Pick one role. Each role owns certain files, so we don't edit the same files at the same time.
+We are 7. Pick one role. Each person gets four things:
+- **code they own** and can explain live,
+- **one new feature** to build,
+- **one report section** to write,
+- **one part of the presentation** (presenting their own work).
 
-| # | Role | Files they own | Also responsible for |
-|---|---|---|---|
-| 1 | **Lead and integration** | `run_project.m`, `init_state.m`, `update_scene.m` | Merging everyone's work, submissions |
-| 2 | **Matrices and hierarchy** (R2, R3) | `mat_*.m`, `apply_matrix.m`, `test_matrices.m`, `build_doors.m` | Report section on 4×4 matrices and the hierarchy diagram |
-| 3 | **House and furniture modelling** (R1) | `build_rooms.m`, `build_furniture.m`, `draw_box.m`, `draw_cylinder.m` | Making the scene look good |
-| 4 | **Appliances** | `build_fridge.m`, `build_tv.m`, `build_cooker.m` | Appliance behaviour at night |
-| 5 | **Camera, lighting, day/night** (R4, R5) | `setup_camera_lighting.m`, `apply_camera.m`, `build_lamps.m` | Sun logic in `update_scene.m` |
-| 6 | **Interaction and challenge mode** (R7) | `create_figure.m`, `on_key_press.m` | Night-mode logic, on-screen controls |
-| 7 | **Documentation and media** (R6) | `README.txt` | Video, report, slides, contribution table |
+No two people own the same file, so we never edit the same file at the same time.
 
-**Everyone** writes part of the report and speaks at the presentation.
+| # | Role | Code they own | New feature to build | Report section |
+|---|---|---|---|---|
+| 1 | **Coordinator and integration** | `run_project.m`, `init_state.m`, `update_scene.m`, `update_status.m` | **Timed daily routine**: cooker on at 07:00, TV at 20:00, etc., so the video shows events without key presses (R6) | Objectives and scope, Gantt chart, contribution table |
+| 2 | **Matrices and doors** (R2, R3) | `mat_*.m`, `apply_matrix.m`, `test_matrices.m`, `build_doors.m`, `update_doors.m` | **Door handles turn** before the door swings (uses the third hierarchy level) | 4×4 matrices, hierarchy diagram, rotation about a pivot |
+| 3 | **House and furniture** (R1) | `build_rooms.m`, `build_furniture.m`, `draw_box.m`, `draw_cylinder.m` | **More furniture**: chairs, rug, kitchen counter, curtains | Scene design and modelling |
+| 4 | **Appliances and night mode** (challenge) | `build_fridge.m`, `build_tv.m`, `build_cooker.m`, `update_appliances.m` | **Cooker child lock** after 22:00 (third night-mode appliance) | Challenge mode |
+| 5 | **Camera and lighting** (R4, R5) | `setup_camera_lighting.m`, `apply_camera.m`, `build_lamps.m`, `update_lighting.m` | **Camera tour** through the house (a brief extension) | Camera, projection and lighting |
+| 6 | **Interaction and ceiling fan** (R7) | `create_figure.m`, `on_key_press.m`, new `build_fan.m` | **Ceiling fan** (ceiling → hub → blades) with a key to change its speed | Controls and interaction |
+| 7 | **Media and textures** (R6) | `README.txt`, video settings in `run_project.m` (see note), new `apply_textures.m` | **Textures**: wood floor, picture on the TV; records the final video | Results, screenshots, references, final formatting |
+
+**Note:** person 7 only changes the `RECORD_VIDEO` / `VIDEO_*` lines at the top of `run_project.m`; tell person 1 when you do.
+
+**Presentation:** each person presents their own part. Person 6 drives the live demo because they own the controls.
 
 **Rules for working together:**
-- Only edit the files you own. If you need to change someone else's file, tell them first.
+- Only edit the files you own. If your feature needs a change in someone else's file (e.g. a new key in `on_key_press.m`), ask the owner to add it or agree with them first.
 - Put your name in the `Author(s):` line at the top of each file you work on (required by R8).
 - Understand your own files **and** the main loop (`run_project.m` + `update_scene.m`).
 
@@ -145,7 +156,7 @@ Undo practice changes before you commit, unless the group agrees to keep them. T
 The repo is **public**: anyone can clone or download it without logging in. **To push changes** you must be a collaborator (send your GitHub username to the coordinator, then accept the invite).
 
 **Golden rules**
-1. **Only edit the files you own** (see section 3). The shared files (`run_project.m`, `init_state.m`, `update_scene.m`) are changed by the lead, or on a branch the lead reviews.
+1. **Only edit the files you own** (see section 3). If you need a change in someone else's file, ask the owner first.
 2. **Pull before you start, every time.**
 3. **Run `run_project` before you push.** If it doesn't run, don't push.
 4. Write clear commit messages, e.g. `Add rug and chairs to living room`, not `update`.
@@ -201,7 +212,7 @@ What the brief requires, and where we are.
 | Req | What the brief wants | Where it is now | Status |
 |---|---|---|---|
 | R1 | ≥ 5 objects from primitives | Rooms, sofa, tables, bed, wardrobe, fridge, TV, cooker, sufuria, lamps | ✅ done |
-| R2 | Own 4×4 matrices; move an object by multiplying its **vertices** | `mat_*.m`; sufuria lid in `update_scene.m` §6 | ✅ done |
+| R2 | Own 4×4 matrices; move an object by multiplying its **vertices** | `mat_*.m`; sufuria lid in `update_appliances.m` | ✅ done |
 | R3 | 3-level hierarchy + rotation about a pivot that isn't the origin | house → door → handle; house → fridge → door → handle | ✅ done |
 | R4 | Perspective + orthographic; ≥ 2 camera positions; switch with a key | `C` and `P` keys, 4 cameras | ✅ done |
 | R5 | Light, Gouraud shading, suitable materials | Sun + 3 lamps, Gouraud shading, `material` | ✅ done (improve colours) |
@@ -211,13 +222,12 @@ What the brief requires, and where we are.
 | Challenge | Night mode: lights on **and 2 appliances behave differently** | Lamps; TV dims + 23:00 sleep timer; fridge 10 s door warning | ✅ done |
 
 ### What we still have to do
-1. **Timed events for R6.** For example, a daily routine where the cooker comes on at 07:00 and 19:00 and the TV at 20:00, so the 60-second video shows things happening without anyone pressing keys.
-2. **Make it look better:** colours, a rug, kitchen counter, chairs, curtains, a patch of sunlight on the floor.
-3. **Optional extensions** (pick 1–2 at most; quality matters more than quantity):
-   - Ceiling fan: ceiling → hub → blades (another nice hierarchy)
-   - Textures (wood floor, picture on the TV)
-   - A camera tour of the house
+1. **Each person builds their new feature** from the roles table (section 3).
+2. **Run `run_project` after the update split.** `update_scene.m` was split into four files; it hasn't been run in MATLAB since. The first person to run it should confirm it still works.
+3. **Record the video** (≥ 60 s) once the features are in (person 7).
 4. **Fill in names** in every file header and in `README.txt`.
+
+Quality matters more than quantity: if a feature is taking too long, a simpler version that works is better than an ambitious one that doesn't.
 
 ---
 

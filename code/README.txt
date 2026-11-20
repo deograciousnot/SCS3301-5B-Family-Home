@@ -58,8 +58,14 @@ FILES
   setup_camera_lighting.m  sun light and camera list
   apply_camera.m           sets camera position and projection
   on_key_press.m           keyboard controls
-  update_scene.m           per-frame animation and theme logic
+  update_scene.m           per-frame update: calls the four files below
+  update_lighting.m        clock, sun, sky colour, lamps
+  update_doors.m           room doors swinging on their hinges
+  update_appliances.m      fridge, TV, cooker + night-mode behaviour
+  update_status.m          status bar text
   step_toward.m            smooth movement helper
+  show_message.m           short message in the status bar
+  onoff.m                  true/false -> 'on'/'off'
   mat_translate.m, mat_scale.m, mat_rotx.m, mat_roty.m, mat_rotz.m
                            our own 4x4 homogeneous matrices
   mat_about_pivot.m        rotation about a pivot (door hinge)
